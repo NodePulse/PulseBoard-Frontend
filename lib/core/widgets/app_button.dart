@@ -56,19 +56,25 @@ class AppButton extends StatelessWidget {
       height: height,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
-        style:
-            style ??
-            ElevatedButton.styleFrom(
-              elevation: elevation,
-              backgroundColor: backgroundColor,
-              foregroundColor: foregroundColor,
-              disabledBackgroundColor: disabledColor,
-              padding: padding,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(borderRadius),
-                side: borderSide ?? BorderSide.none,
-              ),
-            ),
+        style: style ??
+            ((backgroundColor == null &&
+                    foregroundColor == null &&
+                    elevation == 0 &&
+                    padding == null &&
+                    borderSide == null &&
+                    borderRadius == 12)
+                ? null
+                : ElevatedButton.styleFrom(
+                    elevation: elevation,
+                    backgroundColor: backgroundColor,
+                    foregroundColor: foregroundColor,
+                    disabledBackgroundColor: disabledColor,
+                    padding: padding,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(borderRadius),
+                      side: borderSide ?? BorderSide.none,
+                    ),
+                  )),
         child: isLoading
             ? const SizedBox(
                 width: 22,

@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/core/widgets/app_scaffold.dart';
+import 'package:pulseboard_frontend/core/constants/app_colors.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.red,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-      ),
-      child: AppScaffold(
-        child: Center(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return AppScaffold(
+      child: Center(
           child: Column(
             spacing: 32,
             children: [
@@ -29,7 +26,7 @@ class SplashScreen extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white10),
+                    border: Border.all(color: theme.colorScheme.outline),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -39,7 +36,7 @@ class SplashScreen extends StatelessWidget {
                         height: 8,
                         width: 8,
                         decoration: const BoxDecoration(
-                          color: Colors.green,
+                          color: AppColors.success,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -47,7 +44,7 @@ class SplashScreen extends StatelessWidget {
                       Text(
                         "PulseBoard is now live in Beta",
                         style: TextStyle(
-                          color: Colors.grey[300],
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
                         ),
@@ -59,19 +56,18 @@ class SplashScreen extends StatelessWidget {
               Text(
                 "Manage your work at the Speed of Pulse.",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   fontSize: 48,
-                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
                   height: 1.15,
                 ),
               ),
               Text(
                 "The real-time project management tool built for modern teams. Sync instantly, collaborate seamlessly, and ship faster than ever before.",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontSize: 18,
-                  color: Colors.grey[400],
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   height: 1.15,
                 ),
               ),
@@ -79,25 +75,29 @@ class SplashScreen extends StatelessWidget {
                 onPressed: () {
                   context.push(AppRoutes.signup);
                 },
-                textStyle: TextStyle(color: Colors.white, fontSize: 20),
+                textStyle: const TextStyle(color: Colors.white, fontSize: 20),
                 title: "Get Started for Free",
-                backgroundColor: Color.fromARGB(255, 123, 118, 255),
+                backgroundColor: AppColors.primary,
               ),
               AppButton(
                 onPressed: () {
-                  print("Button");
+                  context.push(AppRoutes.signin);
                 },
-                textStyle: TextStyle(color: Colors.white, fontSize: 20),
+                textStyle: TextStyle(
+                  color: isDark ? Colors.white : theme.colorScheme.primary,
+                  fontSize: 20,
+                ),
                 title: "Sign In",
                 backgroundColor: Colors.transparent,
                 borderSide: BorderSide(
-                  color: Color.fromARGB(40, 250, 250, 250),
+                  color: isDark
+                      ? AppColors.glassBorder
+                      : theme.colorScheme.primary,
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pulseboard_frontend/core/constants/app_colors.dart';
 
 class AppScaffold extends StatelessWidget {
   final Widget? child;
@@ -6,22 +8,34 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.blueGrey,
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: RadialGradient(
-              // radius: double,
-              colors: [
-                Color.fromARGB(255, 32, 30, 30),
-                Color.fromARGB(255, 25, 3, 52),
-              ],
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final startColor = isDark ? AppColors.scaffoldGradientStart : Colors.white;
+    final endColor = isDark ? AppColors.scaffoldGradientEnd : const Color(0xFFE2E8F0);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: startColor,
+          body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                colors: [
+                  startColor,
+                  endColor,
+                ],
+              ),
             ),
+            child: Padding(padding: const EdgeInsets.all(12), child: child),
           ),
-          child: Padding(padding: EdgeInsets.all(12), child: child),
         ),
       ),
     );

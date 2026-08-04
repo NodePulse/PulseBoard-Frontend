@@ -4,6 +4,7 @@ import 'package:pulseboard_frontend/core/router/app_routes.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/core/widgets/app_scaffold.dart';
 import 'package:pulseboard_frontend/core/widgets/app_text_field.dart';
+import 'package:pulseboard_frontend/core/constants/app_colors.dart';
 import 'package:pulseboard_frontend/features/authentication/signup/controller/signup_form_controller.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -15,10 +16,15 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
+  final _formKey = GlobalKey<FormState>();
   final signupForm = SignupFormController();
 
   void _submitForm() {
-    print(signupForm.firstName.text);
+    FocusScope.of(context).unfocus();
+
+    if (_formKey.currentState!.validate()) {
+      print(signupForm.firstName.text);
+    }
   }
 
   @override
@@ -30,107 +36,147 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      child: Center(
-        child: Card(
-          color: Colors.transparent,
-          elevation: 6,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  "Create an Account",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 24,
+                    horizontal: 16,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 450),
+                    child: Card(
+                      elevation: 6,
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "Create an Account",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Join PulseBoard today",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.6),
+                                  ),
+                            ),
+                            const SizedBox(height: 32),
+                            Form(
+                              key: _formKey,
+                              autovalidateMode: AutovalidateMode.onUnfocus,
+                              child: Column(
+                                children: [
+                                  AppTextField(
+                                    label: "First Name",
+                                    hintText: "First Name",
+                                    controller: signupForm.firstName,
+                                    // prefixIcon: Icon(Icons.person_outline),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  AppTextField(
+                                    label: "Last Name",
+                                    hintText: "Last Name",
+                                    controller: signupForm.lastName,
+                                    // prefixIcon: Icon(Icons.person_outline),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  AppTextField(
+                                    label: "Email",
+                                    hintText: "Email",
+                                    keyboardType: TextInputType.emailAddress,
+                                    controller: signupForm.email,
+                                    // prefixIcon: Icon(Icons.email_outlined),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  AppTextField(
+                                    label: "Password",
+                                    hintText: "Password",
+                                    controller: signupForm.password,
+                                    obscureText: _obscurePassword,
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _obscurePassword
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                      ),
+                                    ),
+                                    // prefixIcon: Icon(Icons.lock_outline),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  AppButton(
+                                    title: "Sign Up",
+                                    backgroundColor: AppColors.primary,
+                                    textStyle: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      _submitForm();
+                                    },
+                                    width: double.infinity,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Divider(
+                              color: Theme.of(context).colorScheme.outline,
+                              height: 1,
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Already have an account?",
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.6),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.push(AppRoutes.signin);
+                                  },
+                                  style: const ButtonStyle(
+                                    overlayColor: WidgetStatePropertyAll(
+                                      Colors.transparent,
+                                    ),
+                                  ),
+                                  child: const Text("Sign in"),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  "Join PulseBoard today",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
-                const SizedBox(height: 32),
-                AppTextField(
-                  label: "First Name",
-                  hintText: "First Name",
-                  controller: signupForm.firstName,
-                  // prefixIcon: Icon(Icons.person_outline),
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: "Last Name",
-                  hintText: "Last Name",
-                  controller: signupForm.lastName,
-                  // prefixIcon: Icon(Icons.person_outline),
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: "Email",
-                  hintText: "Email",
-                  keyboardType: TextInputType.emailAddress,
-                  controller: signupForm.email,
-                  // prefixIcon: Icon(Icons.email_outlined),
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: "Password",
-                  hintText: "Password",
-                  controller: signupForm.password,
-                  obscureText: _obscurePassword,
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                    ),
-                  ),
-                  // prefixIcon: Icon(Icons.lock_outline),
-                ),
-                const SizedBox(height: 20),
-                AppButton(
-                  title: "Sign Up",
-                  backgroundColor: Color.fromARGB(255, 123, 118, 255),
-                  textStyle: TextStyle(color: Colors.white),
-                  onPressed: () {
-                    _submitForm();
-                  },
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  height: 1,
-                  width: double.infinity,
-                  color: Colors.grey[500],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account?",
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.push(AppRoutes.signin);
-                      },
-                      child: Text("Sign in"),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
