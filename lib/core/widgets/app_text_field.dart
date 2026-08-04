@@ -99,7 +99,6 @@ class AppTextField extends FormField<String> {
                  ),
                ),
                if (hasError) ...[
-                 const SizedBox(height: 6),
                  Text(
                    currentErrorText ?? '',
                    style: TextStyle(

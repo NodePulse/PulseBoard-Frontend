@@ -12,7 +12,9 @@ class AppScaffold extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     final startColor = isDark ? AppColors.scaffoldGradientStart : Colors.white;
-    final endColor = isDark ? AppColors.scaffoldGradientEnd : const Color(0xFFE2E8F0);
+    final endColor = isDark
+        ? AppColors.scaffoldGradientEnd
+        : const Color(0xFFE2E8F0);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -27,12 +29,7 @@ class AppScaffold extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              gradient: RadialGradient(
-                colors: [
-                  startColor,
-                  endColor,
-                ],
-              ),
+              gradient: RadialGradient(colors: [startColor, endColor]),
             ),
             child: Padding(padding: const EdgeInsets.all(12), child: child),
           ),
