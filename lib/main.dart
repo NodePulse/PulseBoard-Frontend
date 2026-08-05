@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pulseboard_frontend/core/router/app_router.dart';
 import 'package:pulseboard_frontend/core/theme/light_theme.dart';
 import 'package:pulseboard_frontend/core/theme/dark_theme.dart';
@@ -12,6 +13,8 @@ void main() {
   runApp(const MyApp());
 }
 
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -19,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      // builder: FToastBuilder(),
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,

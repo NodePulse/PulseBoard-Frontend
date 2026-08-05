@@ -4,7 +4,8 @@ import 'package:pulseboard_frontend/core/constants/app_colors.dart';
 
 class AppScaffold extends StatelessWidget {
   final Widget? child;
-  const AppScaffold({super.key, this.child});
+  final double? padding;
+  const AppScaffold({super.key, this.child, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,10 @@ class AppScaffold extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: RadialGradient(colors: [startColor, endColor]),
             ),
-            child: Padding(padding: const EdgeInsets.all(12), child: child),
+            child: Padding(
+              padding: EdgeInsets.all(padding ?? 12),
+              child: child,
+            ),
           ),
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
@@ -7,6 +8,7 @@ import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/core/widgets/app_scaffold.dart';
 import 'package:pulseboard_frontend/core/widgets/app_text_field.dart';
 import 'package:pulseboard_frontend/core/constants/app_colors.dart';
+import 'package:pulseboard_frontend/core/widgets/app_toast.dart';
 import 'package:pulseboard_frontend/features/authentication/signin/controller/signin_form_controller.dart';
 import 'package:zo_animated_border/zo_animated_border.dart';
 
@@ -22,17 +24,31 @@ class _SigninScreenState extends State<SigninScreen> {
   final _formKey = GlobalKey<FormState>();
   final signinForm = SigninFormController();
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     FocusScope.of(context).unfocus();
 
     if (_formKey.currentState?.validate() ?? false) {
-      final res = AuthService().login(
-        data: {
-          "email": signinForm.email.text,
-          "password": signinForm.password.text,
-        },
-      );
-      print(res);
+      try {
+        final res = await AuthService().login(
+          data: {
+            "email": signinForm.email.text,
+            "password": signinForm.password.text,
+          },
+        );
+        if (res.data?.success == true && context.mounted) {
+          AppToast.showSuccess(
+            message: res.data?.message ?? "Login Successfull",
+          );
+        }
+      } on DioException catch (e) {
+        AppToast.showError(
+          message:
+              e.response?.data?['message'] ??
+              "Login failed. Please check your credentials.",
+        );
+      } catch (e) {
+        AppToast.showError(message: "An unexpected error occurred.");
+      }
     }
   }
 
