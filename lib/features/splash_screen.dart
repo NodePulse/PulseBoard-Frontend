@@ -17,7 +17,7 @@ class SplashScreen extends StatelessWidget {
       padding: 32,
       child: Center(
         child: Column(
-          spacing: 18,
+          spacing: 24,
           children: [
             Align(
               alignment: Alignment.center,

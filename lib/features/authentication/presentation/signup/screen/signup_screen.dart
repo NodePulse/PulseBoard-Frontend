@@ -1,61 +1,37 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
-import 'package:pulseboard_frontend/core/services/auth_service.dart';
-import 'package:pulseboard_frontend/core/validators/app_validators.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/core/widgets/app_scaffold.dart';
 import 'package:pulseboard_frontend/core/widgets/app_text_field.dart';
 import 'package:pulseboard_frontend/core/constants/app_colors.dart';
-import 'package:pulseboard_frontend/core/widgets/app_toast.dart';
-import 'package:pulseboard_frontend/features/authentication/signin/controller/signin_form_controller.dart';
+import 'package:pulseboard_frontend/features/authentication/presentation/signup/controller/signup_form_controller.dart';
 import 'package:zo_animated_border/zo_animated_border.dart';
 
-class SigninScreen extends StatefulWidget {
-  const SigninScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<SigninScreen> createState() => _SigninScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
-  final signinForm = SigninFormController();
+  final signupForm = SignupFormController();
 
-  Future<void> _submitForm() async {
+  void _submitForm() {
     FocusScope.of(context).unfocus();
 
-    if (_formKey.currentState?.validate() ?? false) {
-      try {
-        final res = await AuthService().login(
-          data: {
-            "email": signinForm.email.text,
-            "password": signinForm.password.text,
-          },
-        );
-        if (res.data?.success == true && context.mounted) {
-          AppToast.showSuccess(
-            message: res.data?.message ?? "Login Successfull",
-          );
-        }
-      } on DioException catch (e) {
-        AppToast.showError(
-          message:
-              e.response?.data?['message'] ??
-              "Login failed. Please check your credentials.",
-        );
-      } catch (e) {
-        AppToast.showError(message: "An unexpected error occurred.");
-      }
+    if (_formKey.currentState!.validate()) {
+      print(signupForm.firstName.text);
     }
   }
 
   @override
   void dispose() {
     super.dispose();
-    signinForm.dispose();
+    signupForm.dispose();
   }
 
   @override
@@ -94,7 +70,7 @@ class _SigninScreenState extends State<SigninScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                "Welcome Back",
+                                "Create an Account",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(
                                   context,
@@ -102,7 +78,7 @@ class _SigninScreenState extends State<SigninScreen> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                "Sign in to your account",
+                                "Join PulseBoard today",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.bodyLarge
                                     ?.copyWith(
@@ -119,18 +95,31 @@ class _SigninScreenState extends State<SigninScreen> {
                                 child: Column(
                                   children: [
                                     AppTextField(
+                                      label: "First Name",
+                                      hintText: "First Name",
+                                      controller: signupForm.firstName,
+                                      // prefixIcon: Icon(Icons.person_outline),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    AppTextField(
+                                      label: "Last Name",
+                                      hintText: "Last Name",
+                                      controller: signupForm.lastName,
+                                      // prefixIcon: Icon(Icons.person_outline),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    AppTextField(
                                       label: "Email",
                                       hintText: "Email",
                                       keyboardType: TextInputType.emailAddress,
-                                      controller: signinForm.email,
-                                      validator: AppValidators.email,
+                                      controller: signupForm.email,
                                       // prefixIcon: Icon(Icons.email_outlined),
                                     ),
                                     const SizedBox(height: 16),
                                     AppTextField(
                                       label: "Password",
                                       hintText: "Password",
-                                      controller: signinForm.password,
+                                      controller: signupForm.password,
                                       obscureText: _obscurePassword,
                                       suffixIcon: IconButton(
                                         onPressed: () {
@@ -145,17 +134,18 @@ class _SigninScreenState extends State<SigninScreen> {
                                               : Icons.visibility_off_outlined,
                                         ),
                                       ),
-                                      validator: AppValidators.password,
                                       // prefixIcon: Icon(Icons.lock_outline),
                                     ),
                                     const SizedBox(height: 20),
                                     AppButton(
-                                      title: "Sign In",
+                                      title: "Sign Up",
                                       backgroundColor: AppColors.primary,
                                       textStyle: const TextStyle(
                                         color: Colors.white,
                                       ),
-                                      onPressed: _submitForm,
+                                      onPressed: () {
+                                        _submitForm();
+                                      },
                                       width: double.infinity,
                                     ),
                                   ],
@@ -171,7 +161,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Don't have an account?",
+                                    "Already have an account?",
                                     style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme
@@ -181,14 +171,14 @@ class _SigninScreenState extends State<SigninScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      context.push(AppRoutes.signup);
+                                      context.push(AppRoutes.signin);
                                     },
                                     style: const ButtonStyle(
                                       overlayColor: WidgetStatePropertyAll(
                                         Colors.transparent,
                                       ),
                                     ),
-                                    child: const Text("Sign up"),
+                                    child: const Text("Sign in"),
                                   ),
                                 ],
                               ),
