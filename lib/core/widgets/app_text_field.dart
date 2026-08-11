@@ -29,6 +29,7 @@ class AppTextField extends FormField<String> {
     this.filled = true,
     this.contentPadding,
     this.borderRadius = 12,
+    this.textCapitalization = TextCapitalization.none,
   }) : super(
          initialValue: controller != null ? controller.text : '',
          autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -97,6 +98,7 @@ class AppTextField extends FormField<String> {
                    errorText: hasError ? '' : null,
                    errorStyle: const TextStyle(height: 0, fontSize: 0),
                  ),
+                 //  textCapitalization: ,
                ),
                if (hasError) ...[
                  Text(
@@ -136,6 +138,7 @@ class AppTextField extends FormField<String> {
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
+  final TextCapitalization textCapitalization;
 
   @override
   FormFieldState<String> createState() => _AppTextFieldState();

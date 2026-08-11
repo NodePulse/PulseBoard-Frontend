@@ -5,7 +5,13 @@ import 'package:pulseboard_frontend/core/constants/app_colors.dart';
 class AppScaffold extends StatelessWidget {
   final Widget? child;
   final double? padding;
-  const AppScaffold({super.key, this.child, this.padding});
+  final Widget? bottomNavigationBar;
+  const AppScaffold({
+    super.key,
+    this.child,
+    this.padding,
+    this.bottomNavigationBar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +32,7 @@ class AppScaffold extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: startColor,
+          bottomNavigationBar: bottomNavigationBar,
           body: Container(
             width: double.infinity,
             height: double.infinity,

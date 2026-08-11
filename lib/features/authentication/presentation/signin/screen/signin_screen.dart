@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
-import 'package:pulseboard_frontend/core/services/auth_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pulseboard_frontend/features/authentication/presentation/notifier/auth_provider.dart';
 import 'package:pulseboard_frontend/core/validators/app_validators.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/core/widgets/app_scaffold.dart';
@@ -12,14 +12,14 @@ import 'package:pulseboard_frontend/core/widgets/app_toast.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/signin/controller/signin_form_controller.dart';
 import 'package:zo_animated_border/zo_animated_border.dart';
 
-class SigninScreen extends StatefulWidget {
+class SigninScreen extends ConsumerStatefulWidget {
   const SigninScreen({super.key});
 
   @override
-  State<SigninScreen> createState() => _SigninScreenState();
+  ConsumerState<SigninScreen> createState() => _SigninScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _SigninScreenState extends ConsumerState<SigninScreen> {
   bool _obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
   final signinForm = SigninFormController();
@@ -29,23 +29,22 @@ class _SigninScreenState extends State<SigninScreen> {
 
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        final res = await AuthService().login(
-          data: {
-            "email": signinForm.email.text,
-            "password": signinForm.password.text,
-          },
-        );
-        if (res.data?.success == true && context.mounted) {
-          AppToast.showSuccess(
-            message: res.data?.message ?? "Login Successfull",
+        await ref
+            .read(authNotifierProvider.notifier)
+            .login(signinForm.email.text, signinForm.password.text);
+
+        final authState = ref.read(authNotifierProvider);
+
+        if (authState.isAuthenticated && mounted) {
+          AppToast.showSuccess(message: "Login Successful");
+          context.go('/dashboard');
+        } else if (authState.error != null) {
+          AppToast.showError(
+            message:
+                authState.error ??
+                "Login failed. Please check your credentials.",
           );
         }
-      } on DioException catch (e) {
-        AppToast.showError(
-          message:
-              e.response?.data?['message'] ??
-              "Login failed. Please check your credentials.",
-        );
       } catch (e) {
         AppToast.showError(message: "An unexpected error occurred.");
       }
