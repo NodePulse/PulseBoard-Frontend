@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/core/widgets/app_text_field.dart';
 
-class CreateOrganizationDialog extends StatefulWidget {
-  const CreateOrganizationDialog({super.key});
+class CreateOrganizationDialog extends ConsumerStatefulWidget {
+  final Future<void> Function(String name, String slug) onSubmit;
+
+  const CreateOrganizationDialog({super.key, required this.onSubmit});
 
   @override
-  State<CreateOrganizationDialog> createState() =>
+  ConsumerState<CreateOrganizationDialog> createState() =>
       _CreateOrganizationDialogState();
 }
 
-class _CreateOrganizationDialogState extends State<CreateOrganizationDialog> {
+class _CreateOrganizationDialogState
+    extends ConsumerState<CreateOrganizationDialog> {
   final _nameController = TextEditingController();
+  final _slugController = TextEditingController();
 
   @override
   void dispose() {
     _nameController.dispose();
+    _slugController.dispose();
     super.dispose();
   }
 
@@ -88,6 +94,12 @@ class _CreateOrganizationDialogState extends State<CreateOrganizationDialog> {
               hintText: "e.g. Acme Corp",
               controller: _nameController,
             ),
+            const SizedBox(height: 16),
+            AppTextField(
+              label: "Organization Slug",
+              hintText: "e.g. acme-corp",
+              controller: _slugController,
+            ),
             const SizedBox(height: 32),
 
             // Action Buttons
@@ -118,7 +130,11 @@ class _CreateOrganizationDialogState extends State<CreateOrganizationDialog> {
                   child: AppButton(
                     title: "Create",
                     onPressed: () {
-                      Navigator.pop(context);
+                      final name = _nameController.text.trim();
+                      final slug = _slugController.text.trim();
+                      if (name.isEmpty || slug.isEmpty) return;
+
+                      widget.onSubmit(name, slug);
                     },
                   ),
                 ),

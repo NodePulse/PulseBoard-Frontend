@@ -4,8 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/features/home/widget/create_organization_dialog.dart';
+import 'package:pulseboard_frontend/core/widgets/app_toast.dart';
 
-class PlanDetailswidget extends StatefulWidget {
+import 'package:pulseboard_frontend/core/network/dio_provider.dart';
+import 'package:pulseboard_frontend/features/home/data/datasources/organization_remote_datasource.dart';
+import 'package:pulseboard_frontend/features/home/data/repositories/organization_repository_impl.dart';
+import 'package:pulseboard_frontend/features/authentication/presentation/notifier/auth_provider.dart';
+
+class PlanDetailswidget extends ConsumerStatefulWidget {
   final ThemeData theme;
   final bool isDark;
   final AsyncValue<Map<String, dynamic>?> activeSubAsync;
@@ -17,10 +23,42 @@ class PlanDetailswidget extends StatefulWidget {
   });
 
   @override
-  State<PlanDetailswidget> createState() => _PlanDetailswidgetState();
+  ConsumerState<PlanDetailswidget> createState() => _PlanDetailswidgetState();
 }
 
-class _PlanDetailswidgetState extends State<PlanDetailswidget> {
+class _PlanDetailswidgetState extends ConsumerState<PlanDetailswidget> {
+  Future<void> _createOrganization(
+    BuildContext dialogContext,
+    String name,
+    String slug,
+  ) async {
+    try {
+      final authState = ref.read(authNotifierProvider);
+      final userId = authState.user?.id;
+
+      if (userId == null) {
+        if (mounted) {
+          AppToast.showError(message: 'User not authenticated');
+        }
+        throw Exception('User not authenticated');
+      }
+
+      final dio = ref.read(dioProvider);
+      final remoteDatasource = OrganizationRemoteDatasource(dio);
+      final repository = OrganizationRepositoryImpl(remoteDatasource);
+
+      await repository.createOrganization(name, slug, userId);
+      if (mounted) {
+        Navigator.pop(dialogContext);
+      }
+    } catch (e) {
+      AppToast.showError(message: 'Failed to create organization: $e');
+      if (mounted) {
+        // Navigator.pop(dialogContext);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = widget.theme;
@@ -90,8 +128,10 @@ class _PlanDetailswidgetState extends State<PlanDetailswidget> {
                       onPressed: () {
                         showDialog(
                           context: context,
-                          builder: (dialogContext) =>
-                              CreateOrganizationDialog(),
+                          builder: (dialogContext) => CreateOrganizationDialog(
+                            onSubmit: (name, slug) =>
+                                _createOrganization(dialogContext, name, slug),
+                          ),
                         );
                       },
                     )
