@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pulseboard_frontend/core/utils/api_error_handler.dart';
+import 'package:pulseboard_frontend/core/utils/app_logger.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/providers/auth_repository_provider.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/notifier/auth_state.dart';
 
@@ -20,16 +22,21 @@ class AuthNotifier extends Notifier<AuthState> {
         user: user,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      final errorMessage = ApiErrorHandler.getMessage(e);
+      AppLogger.error(" Error here ================> $errorMessage");
+      state = state.copyWith(isLoading: false, error: errorMessage);
     }
   }
+
+  Future<void> register(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+  ) async {}
 
   void logout() {
     // Optionally also call repository.logout() if it clears the token
     state = AuthState.initial();
   }
 }
-

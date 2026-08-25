@@ -1,6 +1,6 @@
 import 'package:pulseboard_frontend/core/storage/secure_storage_service.dart';
 import 'package:pulseboard_frontend/features/authentication/data/datasources/auth_remote_datasource.dart';
-import 'package:pulseboard_frontend/features/authentication/data/models/login_request.dart';
+import 'package:pulseboard_frontend/features/authentication/data/models/auth_request.dart';
 import 'package:pulseboard_frontend/features/authentication/domain/entities/user.dart';
 import 'package:pulseboard_frontend/features/authentication/domain/repositories/auth_repository.dart';
 

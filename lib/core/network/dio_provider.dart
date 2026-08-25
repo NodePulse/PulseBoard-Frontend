@@ -5,8 +5,11 @@ import 'package:pulseboard_frontend/core/network/interceptors/auth_interceptor.d
 import 'package:pulseboard_frontend/core/storage/secure_storage_provider.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import "dart:developer" as developer;
 
 final cookieJarProvider = Provider<CookieJar>((ref) {
+  final cookieJar = CookieJar();
+  developer.log("Cookie Jar: ${cookieJar.toString()}");
   return CookieJar();
 });
 
