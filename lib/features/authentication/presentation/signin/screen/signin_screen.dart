@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
@@ -24,7 +25,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
   final _formKey = GlobalKey<FormState>();
   final signinForm = SigninFormController();
 
-  Future<void> _submitForm() async {
+  Future<void> _submitForm(bool isWeb) async {
     FocusScope.of(context).unfocus();
 
     if (_formKey.currentState?.validate() ?? false) {
@@ -154,7 +155,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                                       textStyle: const TextStyle(
                                         color: Colors.white,
                                       ),
-                                      onPressed: _submitForm,
+                                      onPressed: () => _submitForm(kIsWeb),
                                       width: double.infinity,
                                     ),
                                   ],

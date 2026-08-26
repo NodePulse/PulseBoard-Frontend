@@ -35,14 +35,13 @@ class ProfileScreen extends ConsumerWidget {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  user.email,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+                Text(user.email, style: Theme.of(context).textTheme.bodyLarge),
                 const SizedBox(height: 8),
                 Chip(
                   label: Text('Plan: ${user.plan}'),
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                 ),
               ],
             ),

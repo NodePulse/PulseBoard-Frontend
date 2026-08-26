@@ -7,21 +7,25 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import "dart:developer" as developer;
 
-final cookieJarProvider = Provider<CookieJar>((ref) {
+// CookieJar is only used on non-web platforms.
+// On web, the browser manages cookies natively via its HTTP stack.
+final cookieJarProvider = Provider<CookieJar?>((ref) {
+  if (kIsWeb) return null;
   final cookieJar = CookieJar();
   developer.log("Cookie Jar: ${cookieJar.toString()}");
-  return CookieJar();
+  return cookieJar;
 });
 
 final dioProvider = Provider<Dio>((ref) {
   final secureStorage = ref.watch(secureStorageProvider);
-  final cookieJar = ref.watch(cookieJarProvider);
 
   final dio = Dio(
     BaseOptions(
-      baseUrl: defaultTargetPlatform == TargetPlatform.android
-          ? "http://10.0.2.2:5000/api"
-          : "http://localhost:5000/api",
+      baseUrl: kIsWeb
+          ? "http://localhost:5000/api"
+          : defaultTargetPlatform == TargetPlatform.android
+              ? "http://10.0.2.2:5000/api"
+              : "http://localhost:5000/api",
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
@@ -33,7 +37,14 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   );
 
-  dio.interceptors.add(CookieManager(cookieJar));
+  // Only attach CookieManager on non-web platforms.
+  // dio_cookie_manager asserts !kIsWeb and will crash on Chrome/web.
+  if (!kIsWeb) {
+    final cookieJar = ref.watch(cookieJarProvider);
+    if (cookieJar != null) {
+      dio.interceptors.add(CookieManager(cookieJar));
+    }
+  }
 
   dio.interceptors.add(
     AuthInterceptor(
