@@ -12,7 +12,38 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._remoteDataSource, this._secureStorage);
 
   @override
-  Future<User> login(String email, String password, {bool isWeb = false}) async {
+  Future<User> register(
+    String firstName,
+    String lastName,
+    String email,
+    String password, {
+    bool isWeb = false,
+  }) async {
+    final request = RegisterRequest(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+    );
+    final response = await _remoteDataSource.register(request);
+
+    if (!response.success) {
+      throw Exception(response.message);
+    }
+
+    // if (!kIsWeb) {
+    //   await _secureStorage.saveToken(response.data.accessToken);
+    // }
+
+    return response.data.user.toEntity();
+  }
+
+  @override
+  Future<User> login(
+    String email,
+    String password, {
+    bool isWeb = false,
+  }) async {
     final request = LoginRequest(email: email, password: password);
     final response = await _remoteDataSource.login(request);
 
@@ -29,4 +60,3 @@ class AuthRepositoryImpl implements AuthRepository {
     return response.data.user.toEntity();
   }
 }
-

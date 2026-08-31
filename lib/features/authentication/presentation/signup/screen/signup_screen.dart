@@ -1,30 +1,57 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/core/widgets/app_scaffold.dart';
 import 'package:pulseboard_frontend/core/widgets/app_text_field.dart';
 import 'package:pulseboard_frontend/core/constants/app_colors.dart';
+import 'package:pulseboard_frontend/core/widgets/app_toast.dart';
+import 'package:pulseboard_frontend/features/authentication/presentation/notifier/auth_provider.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/signup/controller/signup_form_controller.dart';
 import 'package:zo_animated_border/zo_animated_border.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   bool _obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
   final signupForm = SignupFormController();
 
-  void _submitForm() {
+  Future<void> _submitForm(bool isWeb) async {
     FocusScope.of(context).unfocus();
 
-    if (_formKey.currentState!.validate()) {
-      print(signupForm.firstName.text);
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        await ref
+            .read(authNotifierProvider.notifier)
+            .register(
+              signupForm.firstName.text,
+              signupForm.lastName.text,
+              signupForm.email.text,
+              signupForm.password.text,
+            );
+
+        final authState = ref.read(authNotifierProvider);
+
+        if (authState.isAuthenticated && mounted) {
+          AppToast.showSuccess(message: "Registration Successful");
+          // context.go('/dashboard');
+        } else if (authState.error != null) {
+          AppToast.showError(
+            message:
+                authState.error ?? "Registration failed. Please try again.",
+          );
+        }
+      } catch (e) {
+        AppToast.showError(message: "An unexpected error occurred.");
+      }
     }
   }
 
@@ -143,9 +170,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       textStyle: const TextStyle(
                                         color: Colors.white,
                                       ),
-                                      onPressed: () {
-                                        _submitForm();
-                                      },
+                                      onPressed: () => _submitForm(kIsWeb),
                                       width: double.infinity,
                                     ),
                                   ],
@@ -171,7 +196,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      context.push(AppRoutes.signin);
+                                      context.go(AppRoutes.signin);
                                     },
                                     style: const ButtonStyle(
                                       overlayColor: WidgetStatePropertyAll(

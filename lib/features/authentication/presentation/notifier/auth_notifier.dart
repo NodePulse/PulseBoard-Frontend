@@ -33,7 +33,23 @@ class AuthNotifier extends Notifier<AuthState> {
     String lastName,
     String email,
     String password,
-  ) async {}
+  ) async {
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      final user = await repository.register(firstName, lastName, email, password);
+      state = state.copyWith(
+        isLoading: false,
+        isAuthenticated: true,
+        user: user,
+      );
+    } catch (e) {
+      final errorMessage = ApiErrorHandler.getMessage(e);
+      AppLogger.error(" Error here ================> $errorMessage");
+      state = state.copyWith(isLoading: false, error: errorMessage);
+    }
+  }
 
   void logout() {
     // Optionally also call repository.logout() if it clears the token

@@ -181,7 +181,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      context.push(AppRoutes.signup);
+                                      context.go(AppRoutes.signup);
                                     },
                                     style: const ButtonStyle(
                                       overlayColor: WidgetStatePropertyAll(

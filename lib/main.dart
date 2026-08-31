@@ -4,14 +4,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pulseboard_frontend/core/router/app_router.dart';
 import 'package:pulseboard_frontend/core/theme/light_theme.dart';
 import 'package:pulseboard_frontend/core/theme/dark_theme.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
   runApp(const ProviderScope(child: MyApp()));

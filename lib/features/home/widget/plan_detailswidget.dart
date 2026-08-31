@@ -139,7 +139,7 @@ class _PlanDetailswidgetState extends ConsumerState<PlanDetailswidget> {
                     AppButton(
                       title: "Upgrade Plan",
                       onPressed: () {
-                        context.push(AppRoutes.upgradePlan);
+                        context.go(AppRoutes.upgradePlan);
                       },
                     ),
                 ],
