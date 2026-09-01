@@ -6,5 +6,8 @@ class ApiEndpoints {
   static const String createPaymentOrder = '/payments/create-payment-order';
   static const String completePaymentOrder = '/payments/complete-payment-order';
   static const String activeSubscription = '/subscriptions/active';
-  static const String createOrganization = '/tenants/create-organization';
+  static const Map<String, String> tenants = {
+    'createOrganization': '/tenants/create-organization',
+    'getOrganization': '/tenants/current-organization',
+  };
 }

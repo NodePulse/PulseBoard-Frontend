@@ -5,6 +5,22 @@ import 'package:pulseboard_frontend/features/authentication/presentation/notifie
 import 'package:pulseboard_frontend/features/home/screen/upgrade_plan_screen.dart';
 import 'package:pulseboard_frontend/features/home/widget/join_organization_widget.dart';
 import 'package:pulseboard_frontend/features/home/widget/plan_detailswidget.dart';
+import 'package:pulseboard_frontend/features/home/widget/dashboard_header_widget.dart';
+import 'package:pulseboard_frontend/features/home/widget/dashboard_analytics_widget.dart';
+
+import 'package:pulseboard_frontend/core/network/dio_provider.dart';
+import 'package:pulseboard_frontend/features/home/data/datasources/organization_remote_datasource.dart';
+import 'package:pulseboard_frontend/features/home/data/repositories/organization_repository_impl.dart';
+
+final currentOrganizationProvider =
+    FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
+      final dio = ref.read(dioProvider);
+      final remoteDatasource = OrganizationRemoteDatasource(dio);
+      final repository = OrganizationRepositoryImpl(remoteDatasource);
+      final x = await repository.getOrganization();
+      debugPrint('current organization = $x');
+      return x;
+    });
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -19,47 +35,70 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final authState = ref.watch(authNotifierProvider);
     final user = authState.user;
     final activeSubAsync = ref.watch(activeSubscriptionProvider);
+    final currentOrgAsync = ref.watch(currentOrganizationProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return AppScaffold(
-      child: Center(
+      child: Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Welcome Header
-              Text(
-                "Welcome back,",
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                user?.firstName ?? "Explorer",
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isWideScreen = constraints.maxWidth > 800;
 
-              // Plan Information Card
-              PlanDetailswidget(
-                theme: theme,
-                isDark: isDark,
-                activeSubAsync: activeSubAsync,
-              ),
+              return Column(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // New Header
+                  DashboardHeaderWidget(
+                    user: user,
+                    organization: currentOrgAsync.value,
+                    theme: theme,
+                    isDark: isDark,
+                  ),
+                  const SizedBox(height: 32),
 
-              const SizedBox(height: 24),
+                  // Analytics Grid
+                  DashboardAnalyticsWidget(theme: theme, isDark: isDark),
+                  const SizedBox(height: 32),
 
-              // Join Team Card
-              JoinOrganizationWidget(isDark: isDark, theme: theme),
-            ],
+                  // Existing Cards
+                  if (isWideScreen)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: PlanDetailswidget(
+                            theme: theme,
+                            isDark: isDark,
+                            activeSubAsync: activeSubAsync,
+                            organization: currentOrgAsync.value,
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        Expanded(
+                          child: JoinOrganizationWidget(
+                            isDark: isDark,
+                            theme: theme,
+                          ),
+                        ),
+                      ],
+                    )
+                  else ...[
+                    PlanDetailswidget(
+                      theme: theme,
+                      isDark: isDark,
+                      activeSubAsync: activeSubAsync,
+                      organization: currentOrgAsync.value,
+                    ),
+                    const SizedBox(height: 24),
+                    JoinOrganizationWidget(isDark: isDark, theme: theme),
+                  ],
+                ],
+              );
+            },
           ),
         ),
       ),

@@ -43,6 +43,7 @@ dependencies:
   dio_cookie_manager: ^3.5.0
   cookie_jar: ^4.0.9
   razorpay_flutter: ^1.4.5
+  razorpay_web: ^3.1.0
   flutter_dotenv: ^6.0.1
   google_fonts: ^8.2.1
 

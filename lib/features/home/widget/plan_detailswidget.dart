@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:pulseboard_frontend/core/router/app_routes.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/features/home/widget/create_organization_dialog.dart';
 import 'package:pulseboard_frontend/core/widgets/app_toast.dart';
@@ -10,16 +8,19 @@ import 'package:pulseboard_frontend/core/network/dio_provider.dart';
 import 'package:pulseboard_frontend/features/home/data/datasources/organization_remote_datasource.dart';
 import 'package:pulseboard_frontend/features/home/data/repositories/organization_repository_impl.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/notifier/auth_provider.dart';
+import 'package:pulseboard_frontend/features/home/screen/upgrade_plan_screen.dart';
 
 class PlanDetailswidget extends ConsumerStatefulWidget {
   final ThemeData theme;
   final bool isDark;
   final AsyncValue<Map<String, dynamic>?> activeSubAsync;
+  final Map<String, dynamic>? organization;
   const PlanDetailswidget({
     super.key,
     required this.theme,
     required this.isDark,
     required this.activeSubAsync,
+    required this.organization,
   });
 
   @override
@@ -36,18 +37,18 @@ class _PlanDetailswidgetState extends ConsumerState<PlanDetailswidget> {
       final authState = ref.read(authNotifierProvider);
       final userId = authState.user?.id;
 
-      if (userId == null) {
-        if (mounted) {
-          AppToast.showError(message: 'User not authenticated');
-        }
-        throw Exception('User not authenticated');
-      }
+      // if (userId == null) {
+      //   if (mounted) {
+      //     AppToast.showError(message: 'User not authenticated');
+      //   }
+      //   throw Exception('User not authenticated');
+      // }
 
       final dio = ref.read(dioProvider);
       final remoteDatasource = OrganizationRemoteDatasource(dio);
       final repository = OrganizationRepositoryImpl(remoteDatasource);
 
-      await repository.createOrganization(name, slug, userId);
+      await repository.createOrganization(name, slug);
       if (mounted) {
         Navigator.pop(dialogContext);
       }
@@ -139,7 +140,10 @@ class _PlanDetailswidgetState extends ConsumerState<PlanDetailswidget> {
                     AppButton(
                       title: "Upgrade Plan",
                       onPressed: () {
-                        context.go(AppRoutes.upgradePlan);
+                        showDialog(
+                          context: context,
+                          builder: (context) => const UpgradePlanScreen(),
+                        );
                       },
                     ),
                 ],

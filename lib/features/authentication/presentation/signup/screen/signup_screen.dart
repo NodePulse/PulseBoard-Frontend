@@ -42,7 +42,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
         if (authState.isAuthenticated && mounted) {
           AppToast.showSuccess(message: "Registration Successful");
-          // context.go('/dashboard');
+          context.go(AppRoutes.emailSent);
         } else if (authState.error != null) {
           AppToast.showError(
             message:

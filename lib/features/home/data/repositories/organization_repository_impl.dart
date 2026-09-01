@@ -7,7 +7,14 @@ class OrganizationRepositoryImpl implements OrganizationRepository {
   OrganizationRepositoryImpl(this._remoteDatasource);
 
   @override
-  Future<Map<String, dynamic>> createOrganization(String name, String slug, String userId) async {
-    return _remoteDatasource.createOrganization(name: name, slug: slug, userId: userId);
+  Future<Map<String, dynamic>> createOrganization(
+    String name,
+    String slug,
+  ) async {
+    return _remoteDatasource.createOrganization(name: name, slug: slug);
+  }
+
+  Future<Map<String, dynamic>> getOrganization() async {
+    return _remoteDatasource.getOrganization();
   }
 }

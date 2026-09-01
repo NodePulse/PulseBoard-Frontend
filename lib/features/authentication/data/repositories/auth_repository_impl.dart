@@ -31,9 +31,9 @@ class AuthRepositoryImpl implements AuthRepository {
       throw Exception(response.message);
     }
 
-    // if (!kIsWeb) {
-    //   await _secureStorage.saveToken(response.data.accessToken);
-    // }
+    if (!kIsWeb) {
+      await _secureStorage.saveToken(response.data.accessToken);
+    }
 
     return response.data.user.toEntity();
   }
@@ -51,8 +51,6 @@ class AuthRepositoryImpl implements AuthRepository {
       throw Exception(response.message);
     }
 
-    // On web, the browser handles the session cookie automatically.
-    // On mobile/desktop, we persist the token in secure storage.
     if (!kIsWeb) {
       await _secureStorage.saveToken(response.data.accessToken);
     }
