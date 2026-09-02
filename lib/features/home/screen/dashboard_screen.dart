@@ -8,15 +8,11 @@ import 'package:pulseboard_frontend/features/home/widget/plan_detailswidget.dart
 import 'package:pulseboard_frontend/features/home/widget/dashboard_header_widget.dart';
 import 'package:pulseboard_frontend/features/home/widget/dashboard_analytics_widget.dart';
 
-import 'package:pulseboard_frontend/core/network/dio_provider.dart';
-import 'package:pulseboard_frontend/features/home/data/datasources/organization_remote_datasource.dart';
-import 'package:pulseboard_frontend/features/home/data/repositories/organization_repository_impl.dart';
+import 'package:pulseboard_frontend/features/home/presentation/providers/organization_repository_provider.dart';
 
 final currentOrganizationProvider =
     FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
-      final dio = ref.read(dioProvider);
-      final remoteDatasource = OrganizationRemoteDatasource(dio);
-      final repository = OrganizationRepositoryImpl(remoteDatasource);
+      final repository = ref.watch(organizationRepositoryProvider);
       final x = await repository.getOrganization();
       debugPrint('current organization = $x');
       return x;

@@ -9,18 +9,16 @@ class OrganizationRemoteDatasource {
   Future<Map<String, dynamic>> createOrganization({
     required String name,
     required String slug,
-    // required String userId,
   }) async {
     final response = await _dio.post(
-      ApiEndpoints.tenants['createOrganization']!,
+      ApiEndpoints.tenants.createOrganization,
       data: {'name': name, 'slug': slug},
-      // options: Options(headers: {'x-user-id': userId}),
     );
     return response.data;
   }
 
   Future<Map<String, dynamic>> getOrganization() async {
-    final response = await _dio.get(ApiEndpoints.tenants['getOrganization']!);
+    final response = await _dio.get(ApiEndpoints.tenants.getOrganization);
     return response.data;
   }
 }

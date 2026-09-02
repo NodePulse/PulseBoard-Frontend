@@ -11,6 +11,7 @@ class AppToast {
       backgroundColor: Colors.green,
       textColor: Colors.white,
       fontSize: 16.0,
+      webBgColor: "linear-gradient(to right, #4caf50, #81c784)",
     );
   }
 
@@ -23,6 +24,7 @@ class AppToast {
       backgroundColor: Colors.red,
       textColor: Colors.white,
       fontSize: 16.0,
+      webBgColor: "linear-gradient(to right, #f44336, #e57373)",
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:pulseboard_frontend/features/authentication/data/models/user_model.dart';
+import 'package:pulseboard_frontend/models/data/user_model.dart';
 
 class LoginResponse {
   final bool success;

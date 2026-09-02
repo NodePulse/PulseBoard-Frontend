@@ -1,5 +1,5 @@
-import 'package:pulseboard_frontend/features/home/data/datasources/organization_remote_datasource.dart';
-import 'package:pulseboard_frontend/features/home/domain/repositories/organization_repository.dart';
+import 'package:pulseboard_frontend/datasources/organization_remote_datasource.dart';
+import 'package:pulseboard_frontend/repositories/domain/organization_repository.dart';
 
 class OrganizationRepositoryImpl implements OrganizationRepository {
   final OrganizationRemoteDatasource _remoteDatasource;

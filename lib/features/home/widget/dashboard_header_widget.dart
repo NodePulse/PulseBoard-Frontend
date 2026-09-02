@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pulseboard_frontend/core/constants/app_colors.dart';
-import 'package:pulseboard_frontend/features/authentication/domain/entities/user.dart';
+import 'package:pulseboard_frontend/models/domain/user.dart';
 
 class DashboardHeaderWidget extends StatelessWidget {
   final User? user;

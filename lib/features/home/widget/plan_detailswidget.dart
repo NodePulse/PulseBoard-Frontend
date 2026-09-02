@@ -4,9 +4,7 @@ import 'package:pulseboard_frontend/core/widgets/app_button.dart';
 import 'package:pulseboard_frontend/features/home/widget/create_organization_dialog.dart';
 import 'package:pulseboard_frontend/core/widgets/app_toast.dart';
 
-import 'package:pulseboard_frontend/core/network/dio_provider.dart';
-import 'package:pulseboard_frontend/features/home/data/datasources/organization_remote_datasource.dart';
-import 'package:pulseboard_frontend/features/home/data/repositories/organization_repository_impl.dart';
+import 'package:pulseboard_frontend/features/home/presentation/providers/organization_repository_provider.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/notifier/auth_provider.dart';
 import 'package:pulseboard_frontend/features/home/screen/upgrade_plan_screen.dart';
 
@@ -44,9 +42,7 @@ class _PlanDetailswidgetState extends ConsumerState<PlanDetailswidget> {
       //   throw Exception('User not authenticated');
       // }
 
-      final dio = ref.read(dioProvider);
-      final remoteDatasource = OrganizationRemoteDatasource(dio);
-      final repository = OrganizationRepositoryImpl(remoteDatasource);
+      final repository = ref.read(organizationRepositoryProvider);
 
       await repository.createOrganization(name, slug);
       if (mounted) {

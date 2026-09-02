@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:pulseboard_frontend/core/network/dio_io_adapter.dart'
     if (dart.library.html) 'package:pulseboard_frontend/core/network/dio_web_adapter.dart';
 import 'package:pulseboard_frontend/core/router/app_routes.dart';
+import 'package:pulseboard_frontend/features/authentication/presentation/signin/screen/forgot_password.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/signin/screen/signin_screen.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/signup/screen/signup_screen.dart';
 import 'package:pulseboard_frontend/features/authentication/presentation/signup/screen/verification_email_screen.dart';
@@ -27,9 +28,7 @@ final GoRouter appRouter = GoRouter(
     // We ping the backend to see if a valid session cookie exists.
     if (kIsWeb) {
       try {
-        final dio = Dio(BaseOptions(
-          baseUrl: "http://localhost:5000/api",
-        ));
+        final dio = Dio(BaseOptions(baseUrl: "http://localhost:5000/api"));
         setupDioAdapter(dio);
         final response = await dio.get('/auth/me');
         if (response.statusCode == 200) {
@@ -40,10 +39,12 @@ final GoRouter appRouter = GoRouter(
       }
     }
 
-    final isGoingToAuth = state.matchedLocation == AppRoutes.splash ||
+    final isGoingToAuth =
+        state.matchedLocation == AppRoutes.splash ||
         state.matchedLocation == AppRoutes.signin ||
         state.matchedLocation == AppRoutes.signup ||
-        state.matchedLocation == AppRoutes.emailSent;
+        state.matchedLocation == AppRoutes.emailSent ||
+        state.matchedLocation == AppRoutes.forgotPassword;
 
     // If there is no cookie saved in case of web (or no token), just send user to non authenticated screen
     if (!isAuthenticated && !isGoingToAuth) {
@@ -73,6 +74,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.signin,
       builder: (context, state) => const SigninScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.forgotPassword,
+      builder: (context, state) => const ForgotPasswordScreen(),
     ),
     ShellRoute(
       builder: (context, state, child) => HomeScreen(child: child),

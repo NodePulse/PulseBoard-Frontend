@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:pulseboard_frontend/core/storage/secure_storage_service.dart';
-import 'package:pulseboard_frontend/features/authentication/data/datasources/auth_remote_datasource.dart';
-import 'package:pulseboard_frontend/features/authentication/data/models/auth_request.dart';
-import 'package:pulseboard_frontend/features/authentication/domain/entities/user.dart';
-import 'package:pulseboard_frontend/features/authentication/domain/repositories/auth_repository.dart';
+import 'package:pulseboard_frontend/datasources/auth_remote_datasource.dart';
+import 'package:pulseboard_frontend/models/data/auth_request.dart';
+import 'package:pulseboard_frontend/models/domain/user.dart';
+import 'package:pulseboard_frontend/repositories/domain/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
@@ -56,5 +56,25 @@ class AuthRepositoryImpl implements AuthRepository {
     }
 
     return response.data.user.toEntity();
+  }
+
+  @override
+  Future sendVerification(
+    String email,
+    VerificationType type,
+    VerificationMethod method,
+  ) async {
+    final request = SendVerificationRequest(
+      email: email,
+      type: type,
+      method: method,
+    );
+    final response = await _remoteDataSource.sendVerification(request);
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'An error occurred');
+    }
+
+    return response['message'];
   }
 }

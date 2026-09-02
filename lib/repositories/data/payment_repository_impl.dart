@@ -1,6 +1,6 @@
-import 'package:pulseboard_frontend/features/home/domain/entities/payment.dart';
-import 'package:pulseboard_frontend/features/home/domain/repositories/payment_repository.dart';
-import 'package:pulseboard_frontend/features/home/data/datasources/payment_remote_datasource.dart';
+import 'package:pulseboard_frontend/models/domain/payment.dart';
+import 'package:pulseboard_frontend/repositories/domain/payment_repository.dart';
+import 'package:pulseboard_frontend/datasources/payment_remote_datasource.dart';
 
 class PaymentRepositoryImpl implements PaymentRepository {
   final PaymentRemoteDatasource _remoteDatasource;

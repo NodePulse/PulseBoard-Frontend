@@ -31,3 +31,35 @@ class RegisterRequest {
     };
   }
 }
+
+enum VerificationType {
+  signup('signup'),
+  forgotPassword('forgot_password');
+
+  final String value;
+  const VerificationType(this.value);
+}
+
+enum VerificationMethod {
+  magic('magic'),
+  otp('otp');
+
+  final String value;
+  const VerificationMethod(this.value);
+}
+
+class SendVerificationRequest {
+  final String email;
+  final VerificationType type;
+  final VerificationMethod method;
+
+  SendVerificationRequest({
+    required this.email,
+    required this.type,
+    required this.method,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {'email': email, 'type': type.value, 'method': method};
+  }
+}

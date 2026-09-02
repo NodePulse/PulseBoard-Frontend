@@ -148,7 +148,19 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                                       validator: AppValidators.password,
                                       // prefixIcon: Icon(Icons.lock_outline),
                                     ),
-                                    const SizedBox(height: 20),
+                                    const SizedBox(height: 10),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          context.push(
+                                            AppRoutes.forgotPassword,
+                                          );
+                                        },
+                                        child: const Text("Forgot Password?"),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
                                     AppButton(
                                       title: "Sign In",
                                       backgroundColor: AppColors.primary,

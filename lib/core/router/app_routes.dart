@@ -7,4 +7,5 @@ class AppRoutes {
   static const dashboard = '/dashboard';
   static const upgradePlan = '/upgrade-plan';
   static const emailSent = '/email-sent';
+  static const forgotPassword = '/forgot-password';
 }

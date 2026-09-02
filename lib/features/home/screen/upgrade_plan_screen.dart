@@ -1,21 +1,15 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pulseboard_frontend/core/widgets/app_button.dart';
-import 'package:pulseboard_frontend/core/widgets/app_scaffold.dart';
 import 'package:pulseboard_frontend/core/constants/subscription_plan.dart';
-import 'package:pulseboard_frontend/core/network/dio_provider.dart';
-import 'package:pulseboard_frontend/features/home/data/datasources/payment_remote_datasource.dart';
-import 'package:pulseboard_frontend/features/home/data/repositories/payment_repository_impl.dart';
+import 'package:pulseboard_frontend/features/home/presentation/providers/payment_repository_provider.dart';
 import 'package:pulseboard_frontend/core/utils/logger.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 final activeSubscriptionProvider =
     FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
-      final dio = ref.read(dioProvider);
-      final remoteDatasource = PaymentRemoteDatasource(dio);
-      final repository = PaymentRepositoryImpl(remoteDatasource);
+      final repository = ref.watch(paymentRepositoryProvider);
       return repository.getActiveSubscription();
     });
 
@@ -33,9 +27,7 @@ class _UpgradePlanScreenState extends ConsumerState<UpgradePlanScreen> {
   Future<void> _handleUpgrade(String planId) async {
     setState(() => _loadingPlanId = planId);
     try {
-      final dio = ref.read(dioProvider);
-      final remoteDatasource = PaymentRemoteDatasource(dio);
-      final repository = PaymentRepositoryImpl(remoteDatasource);
+      final repository = ref.read(paymentRepositoryProvider);
 
       final payment = await repository.upgradePlan(planId, 'RAZORPAY');
       debugPrint("Payment ${payment.toString()}");
@@ -81,9 +73,7 @@ class _UpgradePlanScreenState extends ConsumerState<UpgradePlanScreen> {
     Log.info(response.toString());
 
     try {
-      final dio = ref.read(dioProvider);
-      final remoteDatasource = PaymentRemoteDatasource(dio);
-      final repository = PaymentRepositoryImpl(remoteDatasource);
+      final repository = ref.read(paymentRepositoryProvider);
 
       await repository.completePaymentOrder(
         response.orderId ?? '',

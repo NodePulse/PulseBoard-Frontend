@@ -1,4 +1,4 @@
-import 'package:pulseboard_frontend/features/authentication/domain/entities/user.dart';
+import 'package:pulseboard_frontend/models/domain/user.dart';
 
 class AuthState {
   final bool isAuthenticated;
