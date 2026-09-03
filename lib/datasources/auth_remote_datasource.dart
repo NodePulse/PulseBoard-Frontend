@@ -26,9 +26,27 @@ class AuthRemoteDataSource {
     return LoginResponse.fromJson(response.data);
   }
 
-  Future sendVerification(request) async {
+  Future sendVerification(SendVerificationRequest request) async {
     final response = await _dio.post(
       ApiEndpoints.auth.sendVerification,
+      data: request.toJson(),
+    );
+
+    return response.data;
+  }
+
+  Future verifyOtp(VerifyOtpRequest request) async {
+    final response = await _dio.post(
+      ApiEndpoints.auth.verify,
+      data: request.toJson(),
+    );
+
+    return response.data;
+  }
+
+  Future resetPassword(ResetPasswordRequest request) async {
+    final response = await _dio.post(
+      ApiEndpoints.auth.resetPassword,
       data: request.toJson(),
     );
 

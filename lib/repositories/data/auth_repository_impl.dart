@@ -72,7 +72,50 @@ class AuthRepositoryImpl implements AuthRepository {
     final response = await _remoteDataSource.sendVerification(request);
 
     if (response['success'] != true) {
-      throw Exception(response['message'] ?? 'An error occurred');
+      throw response['message'] ?? 'An error occurred';
+    }
+
+    return response['message'];
+  }
+
+  @override
+  Future verify(
+    String email,
+    String otp,
+    VerificationType type,
+    VerificationMethod method,
+  ) async {
+    final request = VerifyOtpRequest(
+      email: email,
+      otp: otp,
+      type: type,
+      method: method,
+    );
+    final response = await _remoteDataSource.verifyOtp(request);
+
+    if (response['success'] != true) {
+      throw response['message'] ?? 'An error occurred';
+    }
+
+    return response['message'];
+  }
+
+  @override
+  Future resetPassword(
+    String email,
+    String code,
+    String newPassword,
+  ) async {
+    final request = ResetPasswordRequest(
+      mode: 'forgot',
+      email: email,
+      code: code,
+      newPassword: newPassword,
+    );
+    final response = await _remoteDataSource.resetPassword(request);
+
+    if (response['success'] != true) {
+      throw response['message'] ?? 'An error occurred';
     }
 
     return response['message'];

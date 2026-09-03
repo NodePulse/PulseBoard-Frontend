@@ -60,6 +60,75 @@ class SendVerificationRequest {
   });
 
   Map<String, dynamic> toJson() {
-    return {'email': email, 'type': type.value, 'method': method};
+    return {'email': email, 'type': type.value, 'method': method.value};
+  }
+}
+
+class VerifyOtpRequest {
+  final String email;
+  final String otp;
+  final VerificationType type;
+  final VerificationMethod method;
+
+  VerifyOtpRequest({
+    required this.email,
+    required this.otp,
+    required this.type,
+    required this.method,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'code': otp,
+      'type': type.value,
+      'method': method.value,
+    };
+  }
+}
+
+class ChangePasswordRequest {
+  final String email;
+  final String? otp;
+  final String? currentPassword;
+  final String? newPassword;
+
+  ChangePasswordRequest({
+    required this.email,
+    this.otp,
+    this.currentPassword,
+    this.newPassword,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'code': otp,
+      'currentPassword': currentPassword,
+      'newPassword': newPassword,
+    };
+  }
+}
+
+class ResetPasswordRequest {
+  final String mode;
+  final String email;
+  final String code;
+  final String newPassword;
+
+  ResetPasswordRequest({
+    this.mode = 'forgot',
+    required this.email,
+    required this.code,
+    required this.newPassword,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'mode': mode,
+      'email': email,
+      'code': code,
+      'newPassword': newPassword,
+    };
   }
 }

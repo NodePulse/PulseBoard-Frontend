@@ -15,4 +15,15 @@ abstract class AuthRepository {
     VerificationType type,
     VerificationMethod method,
   );
+  Future verify(
+    String email,
+    String code,
+    VerificationType type,
+    VerificationMethod method,
+  );
+  Future resetPassword(
+    String email,
+    String code,
+    String newPassword,
+  );
 }
