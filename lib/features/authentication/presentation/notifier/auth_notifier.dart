@@ -55,4 +55,24 @@ class AuthNotifier extends Notifier<AuthState> {
     // Optionally also call repository.logout() if it clears the token
     state = AuthState.initial();
   }
+
+  Future<void> checkAuthStatus() async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      final user = await repository.fetchSession();
+      state = state.copyWith(
+        isLoading: false,
+        isAuthenticated: true,
+        user: user,
+      );
+    } catch (e, stack) {
+      AppLogger.error("checkAuthStatus error: $e\n$stack");
+      state = state.copyWith(
+        isLoading: false,
+        isAuthenticated: false,
+        user: null,
+      );
+    }
+  }
 }

@@ -17,6 +17,7 @@ class AuthEndpoints {
   final String verify = '/auth/verify';
   final String sendVerification = '/auth/send-verification';
   final String resetPassword = '/auth/reset-password';
+  final String getMe = '/auth/me';
 }
 
 class TenantsEndpoints {

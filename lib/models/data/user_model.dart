@@ -11,7 +11,7 @@ class UserModel {
   final String? verificationToken;
   final String? verificationOtp;
   final String? verificationExpiresAt;
-  final String workspaceRole;
+  final String? workspaceRole;
   final String plan;
   final bool isActive;
   final String createdAt;
@@ -29,7 +29,7 @@ class UserModel {
     this.verificationToken,
     this.verificationOtp,
     this.verificationExpiresAt,
-    required this.workspaceRole,
+    this.workspaceRole,
     required this.plan,
     required this.isActive,
     required this.createdAt,
@@ -49,8 +49,8 @@ class UserModel {
       verificationToken: json['verificationToken']?.toString(),
       verificationOtp: json['verificationOtp']?.toString(),
       verificationExpiresAt: json['verificationExpiresAt']?.toString(),
-      workspaceRole: json['workspaceRole']?.toString() ?? '',
-      plan: json['plan']?.toString() ?? '',
+      workspaceRole: json['workspaceRole']?.toString(),
+      plan: (json['subscription']?['plan'] ?? json['plan'])?.toString() ?? '',
       isActive: json['isActive'] == true,
       createdAt: json['createdAt']?.toString() ?? '',
       updatedAt: json['updatedAt']?.toString() ?? '',
@@ -65,6 +65,7 @@ class UserModel {
       lastName: lastName,
       email: email,
       isEmailVerified: isEmailVerified,
+      workspaceRole: workspaceRole,
       avatarUrl: avatarUrl,
       plan: plan,
       isActive: isActive,

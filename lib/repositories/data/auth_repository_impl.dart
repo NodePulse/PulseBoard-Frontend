@@ -120,4 +120,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return response['message'];
   }
+
+  @override
+  Future<User> fetchSession() async {
+    final userModel = await _remoteDataSource.fetchSession();
+    return userModel.toEntity();
+  }
 }

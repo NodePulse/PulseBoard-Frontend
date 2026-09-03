@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:pulseboard_frontend/core/network/api_endpoints.dart';
 import 'package:pulseboard_frontend/models/data/auth_request.dart';
 import 'package:pulseboard_frontend/models/data/auth_response.dart';
+import 'package:pulseboard_frontend/models/data/user_model.dart';
 
 class AuthRemoteDataSource {
   final Dio _dio;
@@ -51,5 +52,20 @@ class AuthRemoteDataSource {
     );
 
     return response.data;
+  }
+
+  Future<UserModel> fetchSession() async {
+    final response = await _dio.get(ApiEndpoints.auth.getMe);
+    print('fetchSession response: ${response.data}');
+    
+    // Check if data or user is null before accessing
+    final data = response.data;
+    if (data == null) {
+      print('Response data is null');
+      return UserModel.fromJson({});
+    }
+    
+    final userData = data['data']?['user'] as Map<String, dynamic>? ?? {};
+    return UserModel.fromJson(userData);
   }
 }

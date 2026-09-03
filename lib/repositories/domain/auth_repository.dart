@@ -26,4 +26,5 @@ abstract class AuthRepository {
     String code,
     String newPassword,
   );
+  Future<User> fetchSession();
 }

@@ -15,7 +15,7 @@ class User {
   // String? verificationToken;
   // String? verificationOtp;
   // String? verificationExpiresAt;
-  // String workspaceRole;
+  final String? workspaceRole;
 
   const User({
     required this.id,
@@ -23,6 +23,7 @@ class User {
     required this.lastName,
     required this.email,
     required this.isEmailVerified,
+    this.workspaceRole,
     this.avatarUrl,
     required this.plan,
     required this.isActive,
@@ -37,6 +38,7 @@ class User {
     String? lastName,
     String? email,
     bool? isEmailVerified,
+    String? workspaceRole,
     String? avatarUrl,
     String? plan,
     bool? isActive,
@@ -50,6 +52,7 @@ class User {
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
       isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      workspaceRole: workspaceRole ?? this.workspaceRole,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       plan: plan ?? this.plan,
       isActive: isActive ?? this.isActive,
